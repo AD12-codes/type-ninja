@@ -7,6 +7,7 @@ import {
 	IconUser,
 } from "@tabler/icons-react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { Logo } from "@/components/layout/logo";
 import {
 	Tooltip,
 	TooltipContent,
@@ -41,7 +42,7 @@ export function Header() {
 		>
 			<div className="flex items-center gap-6">
 				<Link className="group flex items-center gap-2" to="/">
-					<IconKeyboard className="size-8 text-sub transition-colors group-hover:text-text" />
+					<Logo className="h-9 w-auto text-sub transition-colors group-hover:text-text" />
 					<div className="flex flex-col leading-none">
 						<span className="text-[0.6rem] text-sub">see your code speed</span>
 						<span className="font-semibold text-2xl text-text tracking-tight">
