@@ -1,0 +1,33 @@
+{
+  "name": "@ad-stack/db",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@ad-stack/env": "workspace:*",
+    "@ad-stack/core": "workspace:*",
+    "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
+    "ioredis": "^5.9.2",
+    "pg": "^8.18.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@ad-stack/config": "workspace:*",
+    "@types/pg": "^8.16.0",
+    "drizzle-kit": "^0.31.9",
+    "typescript": "catalog:"
+  }
+}

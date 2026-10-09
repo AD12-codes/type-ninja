@@ -1,0 +1,19 @@
+{
+  "name": "@ad-stack/health",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./service.ts"
+    }
+  },
+  "dependencies": {
+    "@ad-stack/env": "workspace:*",
+    "@ad-stack/db": "workspace:*",
+    "drizzle-orm": "^0.45.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@ad-stack/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
