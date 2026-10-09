@@ -1,61 +1,47 @@
 import { initializeAuth } from "@type-ninja/auth";
 import { logger } from "@type-ninja/core/logger";
 import { closeDB, initializeDB } from "@type-ninja/db";
-import { redisService } from "@type-ninja/db/redis";
+import { runMigrations } from "@type-ninja/db/migrate";
+import { seedContent } from "@type-ninja/db/seed";
+import { env } from "@type-ninja/env/server";
 import { serve } from "bun";
-import { app } from "./app";
+import { app, mountStaticWeb } from "./app";
 
-const PORT = Number(process.env.PORT ?? 3000);
-
-// Bootstrap
 async function bootstrap() {
-	logger.info("Initializing services");
-
-	await redisService.connect();
+	logger.info("initializing services");
 	await initializeDB();
+	if (env.RUN_MIGRATIONS_ON_START) {
+		await runMigrations();
+	}
+	if (env.SEED_ON_START) {
+		await seedContent();
+	}
 	initializeAuth();
+	if (env.WEB_DIST_DIR) {
+		mountStaticWeb(env.WEB_DIST_DIR);
+	}
 
-	logger.info("Starting server");
-
-	const server = serve({
-		fetch: app.fetch,
-		port: PORT,
-	});
-
-	logger.info(
-		{
-			port: PORT,
-			env: process.env.NODE_ENV ?? "development",
-		},
-		"Server started successfully"
-	);
-
+	const server = serve({ fetch: app.fetch, port: env.PORT });
+	logger.info({ port: env.PORT, env: env.NODE_ENV }, "server started");
 	return server;
 }
 
 const server = await bootstrap();
 
-// Graceful shutdown
-process.on("SIGINT", async () => {
-	logger.info("SIGINT received, shutting down");
-	await closeDB();
+async function shutdown(signal: string) {
+	logger.info({ signal }, "shutting down");
 	server.stop();
-	process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-	logger.info("SIGTERM received, shutting down");
 	await closeDB();
-	server.stop();
 	process.exit(0);
-});
+}
 
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("uncaughtException", (error) => {
-	logger.fatal({ error }, "Uncaught exception");
+	logger.fatal({ error }, "uncaught exception");
 	process.exit(1);
 });
-
 process.on("unhandledRejection", (reason) => {
-	logger.fatal({ reason }, "Unhandled promise rejection");
+	logger.fatal({ reason }, "unhandled promise rejection");
 	process.exit(1);
 });

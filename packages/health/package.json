@@ -2,15 +2,11 @@
   "name": "@type-ninja/health",
   "type": "module",
   "exports": {
-    ".": {
-      "default": "./service.ts"
-    }
+    ".": "./service.ts"
   },
   "dependencies": {
-    "@type-ninja/env": "workspace:*",
     "@type-ninja/db": "workspace:*",
-    "drizzle-orm": "^0.45.1",
-    "zod": "catalog:"
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@type-ninja/config": "workspace:*",

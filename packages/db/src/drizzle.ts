@@ -1,26 +1,22 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { getPool } from "./client";
-import {
-	accounts,
-	accountsRelations,
-	users,
-	usersRelations,
-	verifications,
-} from "./schema/auth";
+import * as schema from "./schema";
 
-const schema = {
-	users,
-	accounts,
-	verifications,
-	usersRelations,
-	accountsRelations,
-};
+export type Database = ReturnType<typeof createDrizzle>;
 
-let dbInstance: ReturnType<typeof drizzle> | null = null;
+function createDrizzle() {
+	return drizzle(getPool(), { schema });
+}
 
-export function getDB() {
+let dbInstance: Database | null = null;
+
+export function getDB(): Database {
 	if (!dbInstance) {
-		dbInstance = drizzle(getPool(), { schema });
+		dbInstance = createDrizzle();
 	}
 	return dbInstance;
+}
+
+export function resetDB() {
+	dbInstance = null;
 }

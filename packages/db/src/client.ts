@@ -3,25 +3,23 @@ import { Pool } from "pg";
 
 let pool: Pool | null = null;
 
+const MAX_CONNECTIONS = 10;
+const IDLE_TIMEOUT_MS = 30_000;
+const CONNECTION_TIMEOUT_MS = 5000;
+
 export function createPool() {
-	if (!env.DATABASE_LOCAL_URL) {
-		throw new Error("DATABASE_LOCAL_URL is not defined");
-	}
-
 	pool = new Pool({
-		connectionString: env.DATABASE_LOCAL_URL,
-		max: 10,
-		idleTimeoutMillis: 30_000,
-		connectionTimeoutMillis: 2000,
-		ssl: env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+		connectionString: env.DATABASE_URL,
+		max: MAX_CONNECTIONS,
+		idleTimeoutMillis: IDLE_TIMEOUT_MS,
+		connectionTimeoutMillis: CONNECTION_TIMEOUT_MS,
 	});
-
 	return pool;
 }
 
 export function getPool() {
 	if (!pool) {
-		throw new Error("Database not initialized");
+		return createPool();
 	}
 	return pool;
 }

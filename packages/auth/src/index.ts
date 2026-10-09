@@ -1,110 +1,137 @@
 import { getDB } from "@type-ninja/db/drizzle";
-import { redisService } from "@type-ninja/db/redis";
-import { accounts, users, verifications } from "@type-ninja/db/schema/auth";
+import {
+	accounts,
+	sessions,
+	users,
+	verifications,
+} from "@type-ninja/db/schema/auth";
 import { env } from "@type-ninja/env/server";
-import { checkout, polar, portal, webhooks } from "@polar-sh/better-auth";
-import { Polar } from "@polar-sh/sdk";
+import {
+	PASSWORD_MIN,
+	USERNAME_MAX,
+	USERNAME_MIN,
+	USERNAME_REGEX,
+} from "@type-ninja/shared/api";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, openAPI } from "better-auth/plugins";
+import { username } from "better-auth/plugins";
+import { sendMail } from "./mailer";
 
-let authInstance: ReturnType<typeof betterAuth> | null = null;
+let authInstance: ReturnType<typeof createAuth> | null = null;
 
-export function initializeAuth() {
-	if (authInstance) {
-		return authInstance;
+const SESSION_DAYS = 30;
+const SECONDS_PER_DAY = 60 * 60 * 24;
+const RESERVED_USERNAMES = new Set([
+	"admin",
+	"administrator",
+	"typeninja",
+	"root",
+	"system",
+	"support",
+	"me",
+]);
+
+export function isUsernameValid(value: string): boolean {
+	return (
+		value.length >= USERNAME_MIN &&
+		value.length <= USERNAME_MAX &&
+		USERNAME_REGEX.test(value) &&
+		!RESERVED_USERNAMES.has(value.toLowerCase())
+	);
+}
+
+function socialProviders(): BetterAuthOptions["socialProviders"] {
+	const providers: NonNullable<BetterAuthOptions["socialProviders"]> = {};
+	if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
+		providers.github = {
+			clientId: env.GITHUB_CLIENT_ID,
+			clientSecret: env.GITHUB_CLIENT_SECRET,
+		};
 	}
+	if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+		providers.google = {
+			prompt: "select_account",
+			clientId: env.GOOGLE_CLIENT_ID,
+			clientSecret: env.GOOGLE_CLIENT_SECRET,
+		};
+	}
+	return providers;
+}
 
-	const redis = redisService.getClient();
+/** Social providers that are configured, exposed to the web client. */
+export function enabledSocialProviders(): string[] {
+	return Object.keys(socialProviders() ?? {});
+}
+
+function createAuth() {
 	const db = getDB();
+	const trustedOrigins = [env.BETTER_AUTH_URL, env.CORS_ORIGIN].filter(
+		(origin): origin is string => Boolean(origin)
+	);
+	const sameOrigin = !env.CORS_ORIGIN;
 
-	const polarClient = new Polar({
-		accessToken: env.POLAR_ACCESS_TOKEN,
-		server: env.NODE_ENV === "production" ? "production" : "sandbox",
-	});
-
-	authInstance = betterAuth<BetterAuthOptions>({
+	return betterAuth({
+		appName: "typeninja",
 		baseURL: env.BETTER_AUTH_URL,
+		secret: env.BETTER_AUTH_SECRET,
 		database: drizzleAdapter(db, {
 			provider: "pg",
-			schema: {
-				users,
-				accounts,
-				verifications,
-			},
+			schema: { users, sessions, accounts, verifications },
 		}),
 		user: {
 			modelName: "users",
-		},
-		account: {
-			modelName: "accounts",
-		},
-		verification: {
-			modelName: "verifications",
-		},
-		secondaryStorage: {
-			get: async (key) => await redis.get(key),
-			set: async (key, value, ttl) => {
-				if (ttl) {
-					await redis.set(key, value, "EX", ttl);
-				} else {
-					await redis.set(key, value);
-				}
+			additionalFields: {
+				bio: { type: "string", required: false, input: false },
+				keyboard: { type: "string", required: false, input: false },
 			},
-			delete: async (key) => {
-				await redis.del(key);
+			changeEmail: { enabled: true },
+			deleteUser: { enabled: true },
+		},
+		session: {
+			modelName: "sessions",
+			expiresIn: SESSION_DAYS * SECONDS_PER_DAY,
+			updateAge: SECONDS_PER_DAY,
+			cookieCache: { enabled: true, maxAge: 5 * 60 },
+		},
+		account: { modelName: "accounts" },
+		verification: { modelName: "verifications" },
+		emailAndPassword: {
+			enabled: true,
+			minPasswordLength: PASSWORD_MIN,
+			requireEmailVerification: false,
+			sendResetPassword: async ({ user, url }) => {
+				await sendMail({
+					to: user.email,
+					subject: "typeninja: reset your password",
+					text: `Hi ${user.name},\n\nReset your typeninja password using this link:\n${url}\n\nIf you did not request this, you can ignore this email.`,
+				});
 			},
 		},
-		trustedOrigins: [env.CORS_ORIGIN || ""],
+		trustedOrigins,
 		advanced: {
-			defaultCookieAttributes: {
-				sameSite: "none",
-				secure: true,
-				httpOnly: true,
-			},
+			defaultCookieAttributes: sameOrigin
+				? {
+						sameSite: "lax",
+						secure: env.NODE_ENV === "production",
+						httpOnly: true,
+					}
+				: { sameSite: "none", secure: true, httpOnly: true },
 		},
-		socialProviders: {
-			github: {
-				clientId: env.GITHUB_CLIENT_ID as string,
-				clientSecret: env.GITHUB_CLIENT_SECRET as string,
-			},
-			google: {
-				prompt: "select_account",
-				clientId: env.GOOGLE_CLIENT_ID as string,
-				clientSecret: env.GOOGLE_CLIENT_SECRET as string,
-			},
-		},
+		socialProviders: socialProviders(),
 		plugins: [
-			polar({
-				client: polarClient,
-				createCustomerOnSignUp: true,
-				use: [
-					checkout({
-						products: [
-							{
-								productId: env.POLAR_PRO_M_PRODUCT_ID as string,
-								slug: env.POLAR_PRO_M_SLUG as string,
-							},
-							{
-								productId: env.POLAR_PRO_Y_PRODUCT_ID as string,
-								slug: env.POLAR_PRO_Y_SLUG as string,
-							},
-						],
-						successUrl: `${env.CORS_ORIGIN}/success?checkout_id={CHECKOUT_ID}`,
-						authenticatedUsersOnly: true,
-					}),
-					portal(),
-					webhooks({
-						secret: env.POLAR_WEBHOOK_SECRET || "",
-						// ...polarWebhookHandlers,
-					}),
-				],
+			username({
+				minUsernameLength: USERNAME_MIN,
+				maxUsernameLength: USERNAME_MAX,
+				usernameValidator: isUsernameValid,
 			}),
-			admin(),
-			openAPI(),
 		],
 	});
+}
 
+export function initializeAuth() {
+	if (!authInstance) {
+		authInstance = createAuth();
+	}
 	return authInstance;
 }
 
@@ -114,3 +141,6 @@ export function getAuth() {
 	}
 	return authInstance;
 }
+
+export type Auth = ReturnType<typeof initializeAuth>;
+export type Session = Auth["$Infer"]["Session"];

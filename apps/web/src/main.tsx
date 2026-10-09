@@ -1,4 +1,7 @@
 import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/fira-code";
+import "@fontsource/roboto-mono";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
@@ -11,7 +14,10 @@ const queryClient = createQueryClient();
 const router = createRouter({
 	routeTree,
 	defaultPreload: "intent",
-	defaultPendingComponent: () => <div>Loading...</div>,
+	scrollRestoration: true,
+	defaultPendingComponent: () => (
+		<div className="py-20 text-center text-sub">loading…</div>
+	),
 	context: { queryClient },
 });
 
@@ -28,8 +34,7 @@ if (!rootElement) {
 }
 
 if (!rootElement.innerHTML) {
-	const root = ReactDOM.createRoot(rootElement);
-	root.render(
+	ReactDOM.createRoot(rootElement).render(
 		<QueryClientProvider client={queryClient}>
 			<RouterProvider router={router} />
 		</QueryClientProvider>

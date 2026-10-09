@@ -9,14 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SecurityPolicyRouteImport } from './routes/security-policy'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as AlgorithmsIndexRouteImport } from './routes/algorithms.index'
+import { Route as AlgorithmsSlugRouteImport } from './routes/algorithms.$slug'
+import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardsRoute = LeaderboardsRouteImport.update({
+  id: '/leaderboards',
+  path: '/leaderboards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -24,58 +60,213 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityPolicyRoute = SecurityPolicyRouteImport.update({
+  id: '/security-policy',
+  path: '/security-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlgorithmsIndexRoute = AlgorithmsIndexRouteImport.update({
+  id: '/algorithms/',
+  path: '/algorithms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlgorithmsSlugRoute = AlgorithmsSlugRouteImport.update({
+  id: '/algorithms/$slug',
+  path: '/algorithms/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/leaderboards': typeof LeaderboardsRoute
   '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/security-policy': typeof SecurityPolicyRoute
+  '/settings': typeof SettingsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/algorithms/$slug': typeof AlgorithmsSlugRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/algorithms/': typeof AlgorithmsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/leaderboards': typeof LeaderboardsRoute
   '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/security-policy': typeof SecurityPolicyRoute
+  '/settings': typeof SettingsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/algorithms/$slug': typeof AlgorithmsSlugRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/algorithms': typeof AlgorithmsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/leaderboards': typeof LeaderboardsRoute
   '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/security-policy': typeof SecurityPolicyRoute
+  '/settings': typeof SettingsRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/algorithms/$slug': typeof AlgorithmsSlugRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/algorithms/': typeof AlgorithmsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/contact'
+    | '/forgot-password'
+    | '/leaderboards'
+    | '/login'
+    | '/privacy-policy'
+    | '/reset-password'
+    | '/security-policy'
+    | '/settings'
+    | '/terms-of-service'
+    | '/algorithms/$slug'
+    | '/profile/$username'
+    | '/algorithms/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/signup'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/contact'
+    | '/forgot-password'
+    | '/leaderboards'
+    | '/login'
+    | '/privacy-policy'
+    | '/reset-password'
+    | '/security-policy'
+    | '/settings'
+    | '/terms-of-service'
+    | '/algorithms/$slug'
+    | '/profile/$username'
+    | '/algorithms'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/account'
+    | '/contact'
+    | '/forgot-password'
+    | '/leaderboards'
+    | '/login'
+    | '/privacy-policy'
+    | '/reset-password'
+    | '/security-policy'
+    | '/settings'
+    | '/terms-of-service'
+    | '/algorithms/$slug'
+    | '/profile/$username'
+    | '/algorithms/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
+  AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
+  ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LeaderboardsRoute: typeof LeaderboardsRoute
   LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SecurityPolicyRoute: typeof SecurityPolicyRoute
+  SettingsRoute: typeof SettingsRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
+  AlgorithmsSlugRoute: typeof AlgorithmsSlugRoute
+  ProfileUsernameRoute: typeof ProfileUsernameRoute
+  AlgorithmsIndexRoute: typeof AlgorithmsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboards': {
+      id: '/leaderboards'
+      path: '/leaderboards'
+      fullPath: '/leaderboards'
+      preLoaderRoute: typeof LeaderboardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -85,18 +276,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security-policy': {
+      id: '/security-policy'
+      path: '/security-policy'
+      fullPath: '/security-policy'
+      preLoaderRoute: typeof SecurityPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/algorithms/': {
+      id: '/algorithms/'
+      path: '/algorithms'
+      fullPath: '/algorithms/'
+      preLoaderRoute: typeof AlgorithmsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/algorithms/$slug': {
+      id: '/algorithms/$slug'
+      path: '/algorithms/$slug'
+      fullPath: '/algorithms/$slug'
+      preLoaderRoute: typeof AlgorithmsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/$username': {
+      id: '/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof ProfileUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -104,9 +337,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
+  AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
+  ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LeaderboardsRoute: LeaderboardsRoute,
   LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SecurityPolicyRoute: SecurityPolicyRoute,
+  SettingsRoute: SettingsRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
+  AlgorithmsSlugRoute: AlgorithmsSlugRoute,
+  ProfileUsernameRoute: ProfileUsernameRoute,
+  AlgorithmsIndexRoute: AlgorithmsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,22 +1,46 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-export const users = pgTable("users", {
-	id: text("id").primaryKey(),
-	name: text("name").notNull(),
-	email: text("email").notNull().unique(),
-	emailVerified: boolean("email_verified").default(false).notNull(),
-	image: text("image"),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.defaultNow()
-		.$onUpdate(() => /* @__PURE__ */ new Date())
-		.notNull(),
-	role: text("role"),
-	banned: boolean("banned").default(false),
-	banReason: text("ban_reason"),
-	banExpires: timestamp("ban_expires"),
-});
+export const users = pgTable(
+	"users",
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(),
+		email: text("email").notNull().unique(),
+		emailVerified: boolean("email_verified").default(false).notNull(),
+		image: text("image"),
+		username: text("username").unique(),
+		displayUsername: text("display_username"),
+		bio: text("bio"),
+		keyboard: text("keyboard"),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at")
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [index("users_username_idx").on(table.username)]
+);
+
+export const sessions = pgTable(
+	"sessions",
+	{
+		id: text("id").primaryKey(),
+		expiresAt: timestamp("expires_at").notNull(),
+		token: text("token").notNull().unique(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at")
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+		ipAddress: text("ip_address"),
+		userAgent: text("user_agent"),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+	},
+	(table) => [index("sessions_user_id_idx").on(table.userId)]
+);
 
 export const accounts = pgTable(
 	"accounts",
@@ -36,10 +60,11 @@ export const accounts = pgTable(
 		password: text("password"),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at")
+			.defaultNow()
 			.$onUpdate(() => /* @__PURE__ */ new Date())
 			.notNull(),
 	},
-	(table) => [index("accounts_userId_idx").on(table.userId)]
+	(table) => [index("accounts_user_id_idx").on(table.userId)]
 );
 
 export const verifications = pgTable(
@@ -59,12 +84,14 @@ export const verifications = pgTable(
 );
 
 export const usersRelations = relations(users, ({ many }) => ({
-	accountss: many(accounts),
+	accounts: many(accounts),
+	sessions: many(sessions),
 }));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
-	users: one(users, {
-		fields: [accounts.userId],
-		references: [users.id],
-	}),
+	user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+	user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));

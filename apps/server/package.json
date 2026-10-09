@@ -4,19 +4,22 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsdown",
-    "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "check-types": "tsc --noEmit",
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.mjs"
+    "start": "bun run dist/index.mjs",
+    "test": "bun test"
   },
   "dependencies": {
+    "@type-ninja/algorithms": "workspace:*",
     "@type-ninja/auth": "workspace:*",
+    "@type-ninja/core": "workspace:*",
     "@type-ninja/db": "workspace:*",
     "@type-ninja/env": "workspace:*",
     "@type-ninja/health": "workspace:*",
-    "@type-ninja/core": "workspace:*",
+    "@type-ninja/shared": "workspace:*",
+    "@type-ninja/typing-engine": "workspace:*",
     "better-auth": "catalog:",
-    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
     "hono": "^4.8.2",
     "zod": "catalog:"
   },

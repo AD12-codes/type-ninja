@@ -1,8 +1,10 @@
-import { env } from "@type-ninja/env/web";
-import { polarClient } from "@polar-sh/better-auth";
+import { usernameClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { API_BASE } from "./api";
 
 export const authClient = createAuthClient({
-	baseURL: env.VITE_SERVER_URL,
-	plugins: [polarClient()],
+	baseURL: API_BASE || window.location.origin,
+	plugins: [usernameClient()],
 });
+
+export const { useSession, signIn, signUp, signOut } = authClient;

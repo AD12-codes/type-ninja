@@ -1,0 +1,25 @@
+{
+  "name": "@type-ninja/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.ts",
+    "./api": "./src/api.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@type-ninja/algorithms": "workspace:*",
+    "@type-ninja/typing-engine": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@type-ninja/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,12 +1,9 @@
 import { checkDatabase } from "./checks/db";
-import { checkRedis } from "./checks/redis";
 import type { HealthResult } from "./types";
 
 export async function getHealth(): Promise<HealthResult> {
-	const [database, redis] = await Promise.all([checkDatabase(), checkRedis()]);
-
-	const services = { database, redis };
-
+	const database = await checkDatabase();
+	const services = { database };
 	const criticalDown = Object.values(services).some((s) => s.status === "down");
 
 	return {

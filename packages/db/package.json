@@ -2,27 +2,25 @@
   "name": "@type-ninja/db",
   "type": "module",
   "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun run src/seed-cli.ts",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@type-ninja/env": "workspace:*",
+    "@type-ninja/algorithms": "workspace:*",
     "@type-ninja/core": "workspace:*",
+    "@type-ninja/env": "workspace:*",
     "dotenv": "catalog:",
-    "drizzle-orm": "^0.45.1",
-    "ioredis": "^5.9.2",
-    "pg": "^8.18.0",
-    "zod": "catalog:"
+    "drizzle-orm": "catalog:",
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "@type-ninja/config": "workspace:*",

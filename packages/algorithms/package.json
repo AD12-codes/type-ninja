@@ -1,0 +1,21 @@
+{
+  "name": "@type-ninja/algorithms",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog.ts",
+    "./languages": "./src/languages.ts",
+    "./loader": "./src/loader.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@type-ninja/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}
