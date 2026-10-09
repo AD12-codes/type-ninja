@@ -8,6 +8,7 @@ import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { type AuthVariables, sessionMiddleware } from "./lib/auth-middleware";
 import { HttpError } from "./lib/errors";
+import { apiLimiter, authLimiter, resultsLimiter } from "./lib/rate-limit";
 import routes from "./routes";
 
 export const app = new Hono<{ Variables: AuthVariables }>();
@@ -37,9 +38,13 @@ if (env.CORS_ORIGIN) {
 	);
 }
 
+app.use("/api/*", apiLimiter);
+// Mutating auth calls (sign-in, sign-up, password reset, account changes).
+app.post("/api/auth/*", authLimiter);
 app.on(["POST", "GET"], "/api/auth/*", (c) => getAuth().handler(c.req.raw));
 
 app.use("/api/*", sessionMiddleware);
+app.post("/api/v1/results", resultsLimiter);
 app.route("/api/v1", routes);
 
 app.notFound((c) => {
