@@ -27,7 +27,7 @@ export function SocialButtons() {
 						onClick={() =>
 							signIn.social({
 								provider,
-								callbackURL: `${window.location.origin}/account`,
+								callbackURL: window.location.origin,
 							})
 						}
 						type="button"

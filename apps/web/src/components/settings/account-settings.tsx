@@ -17,7 +17,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authClient, signOut, useSession } from "@/lib/auth-client";
+import {
+	authClient,
+	refreshSession,
+	signOut,
+	useSession,
+} from "@/lib/auth-client";
 import {
 	useResetAccount,
 	useResetPersonalBests,
@@ -152,9 +157,10 @@ export function AccountSettings() {
 								updateProfile.mutate(
 									{ username },
 									{
-										onSuccess: () => {
+										onSuccess: async () => {
 											toast.success("username updated");
 											setUsername("");
+											await refreshSession();
 											queryClient.invalidateQueries();
 										},
 										onError: (error) => toast.error(error.message),

@@ -8,3 +8,11 @@ export const authClient = createAuthClient({
 });
 
 export const { useSession, signIn, signUp, signOut } = authClient;
+
+/**
+ * Re-reads the session from the database, bypassing the cookie cache, so
+ * profile changes (like a new username) show up immediately.
+ */
+export async function refreshSession() {
+	await authClient.getSession({ query: { disableCookieCache: true } });
+}

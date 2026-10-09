@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
+import { UsernamePrompt } from "@/components/auth/username-prompt";
 import { CommandPalette } from "@/components/command-palette";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -49,6 +50,7 @@ function RootComponent() {
 				<Footer />
 			</div>
 			<CommandPalette />
+			<UsernamePrompt />
 			<Toaster
 				position="bottom-right"
 				theme="dark"
