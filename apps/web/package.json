@@ -13,8 +13,8 @@
   "dependencies": {
     "@base-ui/react": "^1.1.0",
     "@fontsource-variable/geist-mono": "^5.2.7",
-    "@ad-stack/auth": "workspace:*",
-    "@ad-stack/env": "workspace:*",
+    "@type-ninja/auth": "workspace:*",
+    "@type-ninja/env": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@polar-sh/better-auth": "catalog:",
     "@tabler/icons-react": "^3.36.1",
@@ -40,7 +40,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "@tanstack/react-router-devtools": "^1.159.5",
     "@tanstack/router-plugin": "^1.159.5",
     "@types/node": "^25.2.3",

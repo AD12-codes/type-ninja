@@ -1,4 +1,4 @@
-import { env } from "@ad-stack/env/server";
+import { env } from "@type-ninja/env/server";
 import { Pool } from "pg";
 
 let pool: Pool | null = null;

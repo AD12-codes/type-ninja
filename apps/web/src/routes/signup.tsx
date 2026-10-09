@@ -18,7 +18,7 @@ function SignupPage() {
 		<main className="flex min-h-svh flex-col items-center justify-center bg-background px-4">
 			<div className="mb-8 text-center">
 				<h1 className="font-bold text-2xl tracking-tight sm:text-3xl">
-					ad-stack
+					type-ninja
 				</h1>
 				<p className="mt-1 text-muted-foreground text-sm">
 					Organize your life, one grid at a time

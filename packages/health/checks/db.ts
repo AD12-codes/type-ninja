@@ -1,4 +1,4 @@
-import { getDB } from "@ad-stack/db/drizzle";
+import { getDB } from "@type-ninja/db/drizzle";
 import { sql } from "drizzle-orm";
 import type { DependencyCheckResult } from "../types";
 

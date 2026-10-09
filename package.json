@@ -1,5 +1,5 @@
 {
-  "name": "ad-stack",
+  "name": "type-ninja",
   "private": true,
   "workspaces": {
     "packages": [
@@ -23,22 +23,22 @@
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "db:push": "turbo -F @ad-stack/db db:push",
-    "db:studio": "turbo -F @ad-stack/db db:studio",
-    "db:generate": "turbo -F @ad-stack/db db:generate",
-    "db:migrate": "turbo -F @ad-stack/db db:migrate",
+    "db:push": "turbo -F @type-ninja/db db:push",
+    "db:studio": "turbo -F @type-ninja/db db:studio",
+    "db:generate": "turbo -F @type-ninja/db db:generate",
+    "db:migrate": "turbo -F @type-ninja/db db:migrate",
     "check": "ultracite check",
     "fix": "ultracite fix",
     "prepare": "husky"
   },
   "dependencies": {
-    "@ad-stack/env": "workspace:*",
+    "@type-ninja/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.14",
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "@types/bun": "catalog:",
     "husky": "latest",
     "lint-staged": "latest",

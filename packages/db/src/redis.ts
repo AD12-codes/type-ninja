@@ -1,5 +1,5 @@
-import { logger } from "@ad-stack/core/logger";
-import { env } from "@ad-stack/env/server";
+import { logger } from "@type-ninja/core/logger";
+import { env } from "@type-ninja/env/server";
 import Redis from "ioredis";
 
 class RedisService {

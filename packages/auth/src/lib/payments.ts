@@ -1,4 +1,4 @@
-import { env } from "@ad-stack/env/server";
+import { env } from "@type-ninja/env/server";
 import { Polar } from "@polar-sh/sdk";
 
 export const polarClient = new Polar({

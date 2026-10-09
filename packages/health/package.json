@@ -1,5 +1,5 @@
 {
-  "name": "@ad-stack/health",
+  "name": "@type-ninja/health",
   "type": "module",
   "exports": {
     ".": {
@@ -7,13 +7,13 @@
     }
   },
   "dependencies": {
-    "@ad-stack/env": "workspace:*",
-    "@ad-stack/db": "workspace:*",
+    "@type-ninja/env": "workspace:*",
+    "@type-ninja/db": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

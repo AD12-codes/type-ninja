@@ -1,4 +1,4 @@
-import { getHealth } from "@ad-stack/health";
+import { getHealth } from "@type-ninja/health";
 import { Hono } from "hono";
 
 const health = new Hono();

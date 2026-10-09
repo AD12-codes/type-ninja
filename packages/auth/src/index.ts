@@ -1,7 +1,7 @@
-import { getDB } from "@ad-stack/db/drizzle";
-import { redisService } from "@ad-stack/db/redis";
-import { accounts, users, verifications } from "@ad-stack/db/schema/auth";
-import { env } from "@ad-stack/env/server";
+import { getDB } from "@type-ninja/db/drizzle";
+import { redisService } from "@type-ninja/db/redis";
+import { accounts, users, verifications } from "@type-ninja/db/schema/auth";
+import { env } from "@type-ninja/env/server";
 import { checkout, polar, portal, webhooks } from "@polar-sh/better-auth";
 import { Polar } from "@polar-sh/sdk";
 import { type BetterAuthOptions, betterAuth } from "better-auth";

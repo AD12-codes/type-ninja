@@ -1,5 +1,5 @@
 {
-  "name": "@ad-stack/env",
+  "name": "@type-ninja/env",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "catalog:"
   }

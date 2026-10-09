@@ -1,4 +1,4 @@
-import { logger } from "@ad-stack/core/logger";
+import { logger } from "@type-ninja/core/logger";
 import { closePool, createPool } from "./client";
 import { getDB } from "./drizzle";
 

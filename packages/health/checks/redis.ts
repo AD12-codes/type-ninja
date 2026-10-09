@@ -1,4 +1,4 @@
-import { redisService } from "@ad-stack/db/redis";
+import { redisService } from "@type-ninja/db/redis";
 import type { DependencyCheckResult } from "../types";
 
 export async function checkRedis(): Promise<DependencyCheckResult> {

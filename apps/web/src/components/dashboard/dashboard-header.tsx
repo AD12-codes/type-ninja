@@ -22,7 +22,7 @@ export function DashboardHeader() {
 	return (
 		<header className="border-b bg-background">
 			<div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-				<h1 className="font-semibold text-lg tracking-tight">ad-stack</h1>
+				<h1 className="font-semibold text-lg tracking-tight">type-ninja</h1>
 				<Button
 					className="gap-2 text-muted-foreground hover:text-foreground"
 					disabled={isLoggingOut}

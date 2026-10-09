@@ -1,5 +1,5 @@
 {
-  "name": "@ad-stack/core",
+  "name": "@type-ninja/core",
   "type": "module",
   "exports": {
     "./logger": {
@@ -12,7 +12,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

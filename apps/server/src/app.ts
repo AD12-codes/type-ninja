@@ -1,5 +1,5 @@
-import { getAuth } from "@ad-stack/auth";
-import { logger } from "@ad-stack/core/logger";
+import { getAuth } from "@type-ninja/auth";
+import { logger } from "@type-ninja/core/logger";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import routes from "./routes";

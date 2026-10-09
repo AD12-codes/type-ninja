@@ -10,18 +10,18 @@
     "start": "bun run dist/index.mjs"
   },
   "dependencies": {
-    "@ad-stack/auth": "workspace:*",
-    "@ad-stack/db": "workspace:*",
-    "@ad-stack/env": "workspace:*",
-    "@ad-stack/health": "workspace:*",
-    "@ad-stack/core": "workspace:*",
+    "@type-ninja/auth": "workspace:*",
+    "@type-ninja/db": "workspace:*",
+    "@type-ninja/env": "workspace:*",
+    "@type-ninja/health": "workspace:*",
+    "@type-ninja/core": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "hono": "^4.8.2",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "@types/bun": "catalog:",
     "tsdown": "^0.16.5",
     "typescript": "catalog:"

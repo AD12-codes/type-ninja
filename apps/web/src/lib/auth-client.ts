@@ -1,4 +1,4 @@
-import { env } from "@ad-stack/env/web";
+import { env } from "@type-ninja/env/web";
 import { polarClient } from "@polar-sh/better-auth";
 import { createAuthClient } from "better-auth/react";
 

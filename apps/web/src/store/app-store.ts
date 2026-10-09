@@ -44,7 +44,7 @@ export const useAppStore = create<AppState>()(
 			// ...createGridSlice(...args),
 		}),
 		{
-			name: "ad-stack",
+			name: "type-ninja",
 			enabled: import.meta.env.DEV,
 		}
 	)

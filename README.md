@@ -1,4 +1,4 @@
-# ad-stack
+# type-ninja
 
 A modern full-stack TypeScript monorepo built with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack). Features social authentication, PostgreSQL with Drizzle ORM, Redis caching, and a React frontend with file-based routing.
 
@@ -6,7 +6,7 @@ A modern full-stack TypeScript monorepo built with [Better-T-Stack](https://gith
 
 ## ⚡ First Step After Cloning
 
-This is a **template repository**. Before doing anything else, run the rename script to replace every occurrence of `ad-stack` (package names, imports, config files) with your own project name and reinstall dependencies:
+This is a **template repository**. Before doing anything else, run the rename script to replace every occurrence of `type-ninja` (package names, imports, config files) with your own project name and reinstall dependencies:
 
 ```bash
 bash scripts/rename-project.sh
@@ -15,7 +15,7 @@ bash scripts/rename-project.sh
 The script will:
 
 1. Ask you for a project name (lowercase letters, numbers, hyphens — e.g. `my-app`)
-2. Replace `ad-stack` everywhere across the entire monorepo — `package.json` files, TypeScript source, config files, and more
+2. Replace `type-ninja` everywhere across the entire monorepo — `package.json` files, TypeScript source, config files, and more
 3. Delete the stale `bun.lock` and run `bun install` so all `@your-name/*` workspace packages resolve correctly
 
 > You only need to run this **once**, right after cloning. After that, every Turborepo command (`bun dev`, `bun run db:push`, etc.) will use your project name automatically.
@@ -40,7 +40,7 @@ The script will:
 ## Project Structure
 
 ```
-ad-stack/
+type-ninja/
 ├── apps/
 │   ├── server/                    # Hono API server (Bun runtime)
 │   │   └── src/
@@ -88,27 +88,27 @@ ad-stack/
 
 ## Packages
 
-### `@ad-stack/auth`
+### `@type-ninja/auth`
 
 Better Auth setup with lazy initialization. Supports **Google** and **GitHub** OAuth social sign-in. Includes Polar integration (checkout, portal, webhooks), admin plugin, and OpenAPI plugin. Uses Drizzle adapter for PostgreSQL and Redis for session secondary storage.
 
-### `@ad-stack/db`
+### `@type-ninja/db`
 
 Database layer with PostgreSQL (via `pg` pool) and Drizzle ORM. Provides `createPool()` / `getPool()` for connection management and `getDB()` for the Drizzle instance. Includes Redis client (ioredis) for caching and session storage. Schema defined in `src/schema/auth.ts` with users, accounts, and verifications tables.
 
-### `@ad-stack/env`
+### `@type-ninja/env`
 
 Type-safe environment variable validation using `@t3-oss/env-core` and Zod. Separate configs for server (`server.ts`) and web (`web.ts` with `VITE_` prefix).
 
-### `@ad-stack/core`
+### `@type-ninja/core`
 
-Shared utilities. Exports a pino logger (`@ad-stack/core/logger`).
+Shared utilities. Exports a pino logger (`@type-ninja/core/logger`).
 
-### `@ad-stack/health`
+### `@type-ninja/health`
 
 Health check service that runs DB and Redis checks in parallel. Returns status (`ok` or `degraded`), per-service latency, and metadata (uptime, environment). Used by `GET /api/v1/health`.
 
-### `@ad-stack/config`
+### `@type-ninja/config`
 
 Shared TypeScript base configuration (`tsconfig.base.json`) extended by all packages and apps.
 

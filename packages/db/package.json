@@ -1,5 +1,5 @@
 {
-  "name": "@ad-stack/db",
+  "name": "@type-ninja/db",
   "type": "module",
   "exports": {
     ".": {
@@ -16,8 +16,8 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ad-stack/env": "workspace:*",
-    "@ad-stack/core": "workspace:*",
+    "@type-ninja/env": "workspace:*",
+    "@type-ninja/core": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",
     "ioredis": "^5.9.2",
@@ -25,7 +25,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.9",
     "typescript": "catalog:"

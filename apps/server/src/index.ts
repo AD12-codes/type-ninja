@@ -1,7 +1,7 @@
-import { initializeAuth } from "@ad-stack/auth";
-import { logger } from "@ad-stack/core/logger";
-import { closeDB, initializeDB } from "@ad-stack/db";
-import { redisService } from "@ad-stack/db/redis";
+import { initializeAuth } from "@type-ninja/auth";
+import { logger } from "@type-ninja/core/logger";
+import { closeDB, initializeDB } from "@type-ninja/db";
+import { redisService } from "@type-ninja/db/redis";
 import { serve } from "bun";
 import { app } from "./app";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@ad-stack/auth",
+  "name": "@type-ninja/auth",
   "type": "module",
   "exports": {
     ".": {
@@ -11,8 +11,8 @@
   },
   "scripts": {},
   "dependencies": {
-    "@ad-stack/db": "workspace:*",
-    "@ad-stack/env": "workspace:*",
+    "@type-ninja/db": "workspace:*",
+    "@type-ninja/env": "workspace:*",
     "@polar-sh/better-auth": "catalog:",
     "@polar-sh/sdk": "^0.43.0",
     "better-auth": "catalog:",
@@ -20,7 +20,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ad-stack/config": "workspace:*",
+    "@type-ninja/config": "workspace:*",
     "typescript": "catalog:"
   }
 }
