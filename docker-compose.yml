@@ -1,5 +1,9 @@
-# Production compose file for Dokploy / any Docker host.
-# Copy .env.docker.example to .env and fill in the values before deploying.
+# Compose file for Dokploy (app + bundled Postgres).
+#
+# No host port is published: Dokploy's Traefik reaches the container over the
+# shared `dokploy-network`, so add the domain in the service's Domains tab
+# (service `app`, container port 3000). To run on a plain Docker host instead,
+# use docker-compose.standalone.yml (see DEPLOY-DOKPLOY.md).
 services:
   db:
     image: postgres:17-alpine
@@ -7,7 +11,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-typeninja}
       POSTGRES_USER: ${POSTGRES_USER:-typeninja}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
     volumes:
       - typeninja-db:/var/lib/postgresql/data
     healthcheck:
@@ -24,15 +28,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    expose:
+      - "3000"
+    networks:
+      - default
+      - dokploy-network
     environment:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: postgresql://${POSTGRES_USER:-typeninja}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-typeninja}
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
-      BETTER_AUTH_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env, e.g. https://typeninja.ad12-codes.work}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${PUBLIC_URL:?set PUBLIC_URL, e.g. https://typeninja.ad12-codes.work}
       WEB_DIST_DIR: /app/apps/web/dist
       RUN_MIGRATIONS_ON_START: "true"
       SEED_ON_START: "true"
+      TRUST_PROXY: "true"
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
@@ -42,8 +52,10 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-}
-    ports:
-      - "${APP_PORT:-3000}:3000"
 
 volumes:
   typeninja-db:
+
+networks:
+  dokploy-network:
+    external: true

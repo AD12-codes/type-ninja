@@ -3,71 +3,91 @@
 This guide deploys typeninja to a VPS (for example Hostinger) that runs
 [Dokploy](https://dokploy.com). The app ships as a single Docker image: the Bun
 API serves the built web app, runs database migrations and seeds the algorithm
-content on every boot, so the only other service you need is Postgres.
+content on every boot. The only other thing it needs is a Postgres database.
 
-## What gets deployed
+There are two ways to run it. **Option A** (recommended) uses a Dokploy-managed
+Postgres service plus a Dokploy Application built from the `Dockerfile`; you
+get Dokploy's database backups and the two pieces can be restarted
+independently. **Option B** runs app + Postgres together from
+`docker-compose.yml`.
 
-| Piece | Where it comes from |
-| --- | --- |
-| `app` container | `Dockerfile` at the repo root (web build + API, port 3000) |
-| `db` container | `postgres:17-alpine` with a named volume |
-| Content | Seeded automatically from `packages/algorithms/content` on boot |
+Important: Dokploy's own dashboard listens on port `3000` on the host. Never
+publish the app on a host port; Traefik routes the domain straight to the
+container. (If you see `Bind for 0.0.0.0:3000 failed: port is already
+allocated`, that is what happened.)
 
-The `docker-compose.yml` in the repo wires both together and reads its values
-from environment variables (see `.env.docker.example`).
-
-## 1. Prerequisites
+## Prerequisites
 
 - A VPS with Dokploy installed (`curl -sSL https://dokploy.com/install.sh | sh`).
 - A domain pointing at the VPS, e.g. `typeninja.ad12-codes.work` (an `A` record
   to the server IP).
 - The repository pushed to GitHub/GitLab (Dokploy pulls from git).
 
-## 2. Create the project
+---
 
-1. In Dokploy open **Projects → Create Project**, name it `typeninja`.
-2. Inside the project click **Create Service → Compose**.
-3. Under **Provider** choose your git provider, select the repository and the
-   `main` branch. Set **Compose Path** to `./docker-compose.yml`.
+## Option A (recommended): separate Postgres + Application
 
-## 3. Environment variables
+### A1. Create the project
 
-Open the service's **Environment** tab and paste the contents of
-`.env.docker.example`, filling in the values:
+**Projects → Create Project**, name it `typeninja`.
+
+### A2. Create the database
+
+1. Inside the project: **Create Service → Database → PostgreSQL**.
+2. Name: `typeninja-db`, database name `typeninja`, user `typeninja`, and a long
+   random password. Keep the Postgres version at 16 or 17.
+3. Click **Deploy**, then open the **General** tab and copy the **Internal
+   Connection URL**. It looks like
+   `postgresql://typeninja:<password>@typeninja-db-xxxx:5432/typeninja`.
+   Do not enable external access; the app reaches it over Dokploy's internal
+   network.
+
+### A3. Create the application
+
+1. **Create Service → Application**, name it `typeninja`.
+2. **Provider**: your git provider, repository `AD12-codes/type-ninja`, branch
+   `main`.
+3. **Build Type**: `Dockerfile`, Dockerfile path `Dockerfile`, build context `.`.
+
+### A4. Environment variables
+
+Open the application's **Environment** tab and add:
 
 ```env
-PUBLIC_URL=https://typeninja.ad12-codes.work
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=<internal connection URL from A2>
 BETTER_AUTH_SECRET=<output of: openssl rand -base64 32>
-POSTGRES_DB=typeninja
-POSTGRES_USER=typeninja
-POSTGRES_PASSWORD=<a long random password>
-APP_PORT=3000
+BETTER_AUTH_URL=https://typeninja.ad12-codes.work
+WEB_DIST_DIR=/app/apps/web/dist
+RUN_MIGRATIONS_ON_START=true
+SEED_ON_START=true
+TRUST_PROXY=true
+
+# optional
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM=typeninja <no-reply@ad12-codes.work>
 ```
 
-Notes:
+`BETTER_AUTH_URL` must be the exact public origin (scheme + host, no trailing
+slash). It is used for auth callbacks and secure cookies.
 
-- `PUBLIC_URL` must be the exact public origin (scheme + host, no trailing
-  slash). It is used for auth callbacks and secure cookies.
-- Leave the `GITHUB_*`, `GOOGLE_*` and `SMTP_*` variables empty unless you want
-  social login or password reset emails. The login page hides providers that
-  are not configured, and reset links are written to the container logs when
-  SMTP is not set.
+### A5. Domain and HTTPS
 
-## 4. Domain and HTTPS
+**Domains → Add Domain**: host `typeninja.ad12-codes.work`, container port
+`3000`, HTTPS on with Let's Encrypt. Leave the **Ports** section of the
+application empty.
 
-1. Open the **Domains** tab of the compose service and click **Add Domain**.
-2. Host: `typeninja.ad12-codes.work`, Service name: `app`, Container port: `3000`.
-3. Enable **HTTPS** with the Let's Encrypt certificate provider.
+### A6. Deploy
 
-Dokploy's Traefik instance will route the domain to the container, so you do
-not need to publish `APP_PORT` on the host. If you prefer to keep the host port
-mapping anyway, make sure nothing else uses it.
-
-## 5. Deploy
-
-Click **Deploy**. The first build takes a few minutes (it installs
-dependencies and builds the web app). Watch the **Logs** tab; a healthy boot
-ends with:
+Click **Deploy**. The first build takes a few minutes. A healthy boot ends with:
 
 ```
 running migrations
@@ -76,60 +96,87 @@ content seeded  languages=12 algorithms=31 snippets=372 explanations=31
 server started  port=3000
 ```
 
-Open `https://typeninja.ad12-codes.work` and you should land directly on the
-typing test. `https://typeninja.ad12-codes.work/api/v1/health` returns the
-health check used by the container's `HEALTHCHECK`.
+Open `https://typeninja.ad12-codes.work`; you should land on the typing test.
+`/api/v1/health` returns the health check used by the container's
+`HEALTHCHECK`.
 
-## 6. Updating
+### A7. Backups
 
-Push to `main` and click **Deploy** again (or enable **Auto Deploy** in the
-service's General tab so Dokploy redeploys on every push via webhook).
-Migrations and content seeding are idempotent, so redeploys are safe: new or
-changed snippets and explanations are upserted, nothing user-related is touched.
+Open the `typeninja-db` service → **Backups**, add an S3-compatible
+destination and a schedule (daily is plenty). Dokploy restores from the same
+tab.
 
-## 7. Social login (optional)
+---
 
-Create OAuth apps and add the credentials to the environment:
+## Option B: everything from docker-compose.yml
 
-- **GitHub** → Settings → Developer settings → OAuth Apps. Callback URL:
-  `https://typeninja.ad12-codes.work/api/auth/callback/github`
-- **Google** → Google Cloud Console → Credentials → OAuth client (Web).
-  Authorised redirect URI:
-  `https://typeninja.ad12-codes.work/api/auth/callback/google`
+1. **Create Service → Compose**, provider = your git repo, branch `main`,
+   **Compose Path** `./docker-compose.yml`.
+2. **Environment** tab: paste `.env.docker.example` and fill in `PUBLIC_URL`,
+   `BETTER_AUTH_SECRET` and `POSTGRES_PASSWORD`.
+3. **Domains → Add Domain**: host `typeninja.ad12-codes.work`, service `app`,
+   container port `3000`, HTTPS on.
+4. **Deploy**.
 
-Redeploy after changing environment variables.
-
-## 8. Password reset emails (optional)
-
-Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `SMTP_FROM`.
-Hostinger email hosting works with `smtp.hostinger.com` on port `465`; any
-other SMTP provider (Resend, Brevo, Mailgun...) works the same way.
-
-## 9. Backups
-
-The database lives in the `typeninja-db` Docker volume. Use Dokploy's
-**Backups** feature on the compose service (S3-compatible destination) or run a
-manual dump from the server:
+The compose file joins Dokploy's `dokploy-network` and publishes no host port,
+so it cannot collide with the dashboard. The Postgres data lives in the
+`typeninja-db` volume; back it up with a manual dump:
 
 ```bash
 docker exec $(docker ps -qf name=typeninja.*db) pg_dump -U typeninja typeninja > typeninja-$(date +%F).sql
 ```
 
+---
+
+## Updating
+
+Push to `main` and click **Deploy** (or enable **Auto Deploy** in the service's
+General tab so Dokploy redeploys on every push via webhook). Migrations and
+content seeding are idempotent: new or changed snippets and explanations are
+upserted and user data is never touched.
+
+## Social login (optional)
+
+Create OAuth apps and add the credentials to the environment, then redeploy:
+
+- **GitHub** → Settings → Developer settings → OAuth Apps. Callback URL:
+  `https://typeninja.ad12-codes.work/api/auth/callback/github`
+- **Google** → Google Cloud Console → Credentials → OAuth client (Web).
+  Authorised redirect URI:
+  `https://typeninja.ad12-codes.work/api/auth/callback/google`,
+  authorised JavaScript origin `https://typeninja.ad12-codes.work`.
+
+The login page only shows providers that are configured.
+
+## Password reset emails (optional)
+
+Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `SMTP_FROM`. Brevo's
+free SMTP relay (`smtp-relay.brevo.com`, port `587`, your Brevo login as user
+and an SMTP key as password) or Hostinger's mailbox SMTP
+(`smtp.hostinger.com`, port `465`) both work. Until SMTP is set, reset links
+are written to the application logs instead of sent.
+
 ## Troubleshooting
 
 | Symptom | Fix |
 | --- | --- |
-| Login works but you are signed out on refresh | `PUBLIC_URL` does not match the domain, or the site is served over plain HTTP (cookies are `secure` in production). |
-| `set BETTER_AUTH_SECRET in .env` during deploy | A required variable is missing in the Environment tab. |
+| `Bind for 0.0.0.0:3000 failed: port is already allocated` | Something publishes host port 3000 (Dokploy's dashboard). Remove any port mapping; use the Domains tab instead. |
+| Login works but you are signed out on refresh | `BETTER_AUTH_URL` does not match the domain, or the site is served over plain HTTP (cookies are `secure` in production). |
+| `ECONNREFUSED` / `getaddrinfo` for the database | Wrong `DATABASE_URL`. Use the **internal** URL from the Postgres service, not the external one. |
 | Snippets fail to load with "No snippet matches" | Seeding did not run. Check the logs for `content seeded`; make sure `SEED_ON_START=true`. |
 | Social login button missing | The provider's client id/secret are empty. |
-| Password reset "sent" but no email | SMTP is not configured; the link is in the container logs. |
+| Password reset "sent" but no email | SMTP is not configured; the link is in the application logs. |
+| `429 Too Many Requests` while testing | Rate limiting (30 auth calls per 15 min per IP). Wait, or test from another IP. |
 
 ## Running without Dokploy
 
-The same compose file works on any Docker host:
+On a plain Docker host there is no Traefik, so publish a port with the
+standalone override:
 
 ```bash
-cp .env.docker.example .env   # fill in the values
-docker compose up -d --build
+cp .env.docker.example .env            # fill in the values
+docker network create dokploy-network  # once; satisfies the external network
+docker compose -f docker-compose.yml -f docker-compose.standalone.yml up -d --build
 ```
+
+The app is then available on `http://<host>:8080` (change `APP_PORT` in `.env`).

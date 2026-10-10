@@ -1,0 +1,8 @@
+# Override for plain Docker hosts without Dokploy/Traefik:
+#   docker network create dokploy-network   # once, satisfies the external network
+#   docker compose -f docker-compose.yml -f docker-compose.standalone.yml up -d --build
+# Publishes the app on APP_PORT (default 8080).
+services:
+  app:
+    ports:
+      - "${APP_PORT:-8080}:3000"
